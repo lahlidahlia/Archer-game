@@ -18,29 +18,31 @@ public class PlayerScript : MonoBehaviour {
 
         lookAt(gameObject, mouse_pos);
 
-        if (Input.GetMouseButtonDown(0)) {
+        if (Input.GetMouseButtonDown(0)) { //Button press
             mouse_press_pos = mouse_pos;
 
         }
-        if (Input.GetMouseButton(0)) {
+        if (Input.GetMouseButton(0)) { //Button hold
             if (Vector2.Distance(mouse_pos, mouse_press_pos) > drag_deadzone) { //If the mouse move from its initial position beyond the deadzone
                 mouse_drag = true;
             }
         }
-        if (Input.GetMouseButtonUp(0)) {
-            if (!mouse_drag) { //If player only click
-                move_toward_pos = mouse_press_pos;
+        if (Input.GetMouseButtonUp(0)) { //Button up
+            if (!mouse_drag) {
+                move_toward_pos = mouse_press_pos; //Set destination
             }
             else {
                 //Drag code
             }
-            Debug.Log(mouse_drag);
             mouse_drag = false;
         }
 
-        if(new Vector2(transform.position.x, transform.position.y) != move_toward_pos){
+        if (Input.GetButton("Stop")) { //Stop the player from moving
+            move_toward_pos = transform.position;
+        }
+        if(new Vector2(transform.position.x, transform.position.y) != move_toward_pos){ //Movement code
             Vector2 movement = Vector2.MoveTowards(transform.position, move_toward_pos, speed * Time.deltaTime);
-            transform.position = new Vector3(movement.x, movement.y, transform.position.z);
+            transform.position = new Vector3(movement.x, movement.y, transform.position.z); //Move toward destination
         }
 	}
 
