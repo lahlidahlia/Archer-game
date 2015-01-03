@@ -8,8 +8,18 @@ public class PlayerScript : MonoBehaviour {
     private Vector2 mouse_press_pos; //Position of the mouse when pressed initially
     private Vector2 move_toward_pos; //The position for the player to move toward
     public float drag_deadzone; //How far you can drag the mouse before it registers as a drag
+    
+
+    private LineRenderer lineRenderer;
+    public float drag_arrow_width;
+    public float drag_arrow_sensitivity; //Affect arrow length when dragging
+    public Color drag_arrow_color;
 	// Use this for initialization
 	void Start () {
+        lineRenderer = GetComponent<LineRenderer>();
+        lineRenderer.SetWidth(drag_arrow_width, drag_arrow_width);
+        lineRenderer.SetVertexCount(2);
+        lineRenderer.SetColors(drag_arrow_color, drag_arrow_color);
 	}
 	
 	// Update is called once per frame
@@ -26,15 +36,23 @@ public class PlayerScript : MonoBehaviour {
             if (Vector2.Distance(mouse_pos, mouse_press_pos) > drag_deadzone) { //If the mouse move from its initial position beyond the deadzone
                 mouse_drag = true;
             }
+            if (mouse_drag) {
+                lineRenderer.SetPosition(0, transform.position);
+                lineRenderer.SetPosition(1, transform.position + ((Vector3)mouse_press_pos - (Vector3)mouse_pos)/(1/drag_arrow_sensitivity));
+                lookAt(gameObject, transform.position + ((Vector3)mouse_press_pos - (Vector3)mouse_pos)); //Look at where the arrow is pointing
+            }
         }
         if (Input.GetMouseButtonUp(0)) { //Button up
             if (!mouse_drag) {
                 move_toward_pos = mouse_press_pos; //Set destination
             }
             else {
-                //Drag code
+                //Drag arrow disassembly code
+                lineRenderer.SetPosition(0, Vector3.zero);
+                lineRenderer.SetPosition(1, Vector3.zero);
+                mouse_drag = false;
             }
-            mouse_drag = false;
+
         }
 
         if (Input.GetButton("Stop")) { //Stop the player from moving
@@ -44,6 +62,7 @@ public class PlayerScript : MonoBehaviour {
             Vector2 movement = Vector2.MoveTowards(transform.position, move_toward_pos, speed * Time.deltaTime);
             transform.position = new Vector3(movement.x, movement.y, transform.position.z); //Move toward destination
         }
+
 	}
 
     void lookAt(GameObject obj, Vector3 target) {
