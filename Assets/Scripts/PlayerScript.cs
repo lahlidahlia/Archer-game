@@ -14,6 +14,9 @@ public class PlayerScript : MonoBehaviour {
     public float drag_arrow_width;
     public float drag_arrow_sensitivity; //Affect arrow length when dragging
     public Color drag_arrow_color;
+
+    public GameObject arrow;
+    public float arrow_shoot_speed;
 	// Use this for initialization
 	void Start () {
         lineRenderer = GetComponent<LineRenderer>();
@@ -37,16 +40,23 @@ public class PlayerScript : MonoBehaviour {
                 mouse_drag = true;
             }
             if (mouse_drag) {
+                //Drawing arrow line
                 lineRenderer.SetPosition(0, transform.position);
                 lineRenderer.SetPosition(1, transform.position + ((Vector3)mouse_press_pos - (Vector3)mouse_pos)/(1/drag_arrow_sensitivity));
-                lookAt(gameObject, transform.position + ((Vector3)mouse_press_pos - (Vector3)mouse_pos)); //Look at where the arrow is pointing
+
+                lookAt(gameObject, transform.position + ((Vector3)mouse_press_pos - (Vector3)mouse_pos)); //Look at where player is shooting
             }
         }
         if (Input.GetMouseButtonUp(0)) { //Button up
+            lookAt(gameObject, transform.position + ((Vector3)mouse_press_pos - (Vector3)mouse_pos)); //Look at where player is shooting
             if (!mouse_drag) {
                 move_toward_pos = mouse_press_pos; //Set destination
             }
             else {
+                //Arrow spawning
+                GameObject t_arrow = Instantiate(arrow, transform.position, transform.rotation) as GameObject;
+                t_arrow.rigidbody2D.velocity = t_arrow.transform.right * arrow_shoot_speed;
+
                 //Drag arrow disassembly code
                 lineRenderer.SetPosition(0, Vector3.zero);
                 lineRenderer.SetPosition(1, Vector3.zero);
