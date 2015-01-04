@@ -74,18 +74,18 @@ public class PlayerScript : MonoBehaviour {
 
     void look_at(GameObject obj, Vector3 target) {
         /*Makes the object rotate toward the given point
-         *Example usage: lookAt(transform, Camera.main.ScreenToWorldPoint(Input.mousePosition)); //Object looks at mouse
+         *Example usage: lookAt(gameObject, Camera.main.ScreenToWorldPoint(Input.mousePosition)); //Object looks at mouse
          * 
          */
 
         //Vector2.angle here is used to get the angle between the (1,0) vector(the horizontal line) and the vector between the object and the mouse
-        if (transform.position.y < target.y) { //If the mouse is on the top side of the object
+        if (transform.position.y < target.y) { //If the mouse is above the object
 
             //Make the angle negative (e.g. if the mouse position relative to the object is (1,1), vector2.angle((0,1),(1,1)) would return 45, which is facing the left side.
             //If we make that number negative, it would face the right side.
             transform.rotation = Quaternion.Euler(0, 0, Vector2.Angle(new Vector2(1, 0), target - obj.transform.position));
         }
-        if (transform.position.y > target.y) { //If the mouse is on the bottom side of the object
+        if (transform.position.y > target.y) { //If the mouse is below the object
             transform.rotation = Quaternion.Euler(0, 0, -Vector2.Angle(new Vector2(1, 0), target - obj.transform.position));
         }
     }
