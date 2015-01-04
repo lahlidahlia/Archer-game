@@ -10,16 +10,21 @@ public class Enemy : MonoBehaviour {
     private bool movement_chosen = false; //Determines whether destination has already been chosen for that move cycle
     public float speed;
     public GameObject player;
+    public float shoot_delay; //The delay after stopping to shoot
+    public float after_shoot_delay; //The delay after shooting to move again
+    private bool shot = false; //Whether object has shot anything yet
+    public GameObject arrow;
+    public float arrow_shoot_speed;
 	// Use this for initialization
 	void Start () {
         timer = Time.time;
-        state = "battle";
+        state = "moving";
         player = GameObject.FindWithTag("Player");
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        if (state == "battle") {
+        if (state == "moving") {
             look_at(gameObject, player.transform.position);
             if (Time.time - timer > battle_move_frequency) { //If it's time to move again
                 //Movement  
@@ -35,6 +40,28 @@ public class Enemy : MonoBehaviour {
                 if (move_to(destination, speed)) {
                     movement_chosen = false;
                     timer = Time.time; //Timer reset
+                    state = "shooting"; //Prepare to shoot
+                }
+            }
+        }
+
+        if (state == "shooting") {
+            look_at(gameObject, player.transform.position);
+            if (!shot) {
+                if (Time.time - timer > shoot_delay) { //If it's time to move again
+                    //Shooting
+                    GameObject t_arrow = Instantiate(arrow, transform.position, transform.rotation) as GameObject;
+                    t_arrow.rigidbody2D.velocity = t_arrow.transform.right * arrow_shoot_speed;
+
+                    timer = Time.time;
+                    shot = true;
+                }
+            }
+            if (shot) {
+                if (Time.time - timer > after_shoot_delay) { //After cooldown period
+                    shot = false;
+                    timer = Time.time;
+                    state = "moving";
                 }
             }
         }

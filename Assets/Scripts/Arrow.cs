@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class Arrow : MonoBehaviour {
-
+    public bool is_enemy_arrow;
 	// Use this for initialization
 	void Start () {
 	
@@ -17,9 +17,14 @@ public class Arrow : MonoBehaviour {
     }
 
     void OnTriggerEnter2D(Collider2D col) {
-        if (col.tag == "Enemy") {
-            Destroy(col.gameObject);
-            Destroy(gameObject);
+        if (is_enemy_arrow) {
+
+        }
+        else {
+            if (col.tag == "Enemy") {
+                Destroy(col.gameObject);
+                Destroy(gameObject);
+            }
         }
     }
 }
