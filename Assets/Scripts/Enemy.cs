@@ -50,4 +50,5 @@ public class Enemy : MonoBehaviour {
             return true; //Destination reached
         }
     }
+
 }

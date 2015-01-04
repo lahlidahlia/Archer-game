@@ -16,5 +16,10 @@ public class Arrow : MonoBehaviour {
         Destroy(gameObject);
     }
 
-
+    void OnTriggerEnter2D(Collider2D col) {
+        if (col.tag == "Enemy") {
+            Destroy(col.gameObject);
+            Destroy(gameObject);
+        }
+    }
 }
