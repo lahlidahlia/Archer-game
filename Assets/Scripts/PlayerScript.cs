@@ -29,7 +29,7 @@ public class PlayerScript : MonoBehaviour {
 	void Update () {
         mouse_pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-        lookAt(gameObject, mouse_pos);
+        look_at(gameObject, mouse_pos);
 
         if (Input.GetMouseButtonDown(0)) { //Button press
             mouse_press_pos = mouse_pos;
@@ -44,11 +44,11 @@ public class PlayerScript : MonoBehaviour {
                 lineRenderer.SetPosition(0, transform.position);
                 lineRenderer.SetPosition(1, transform.position + ((Vector3)mouse_press_pos - (Vector3)mouse_pos)/(1/drag_arrow_sensitivity));
 
-                lookAt(gameObject, transform.position + ((Vector3)mouse_press_pos - (Vector3)mouse_pos)); //Look at where player is shooting
+                look_at(gameObject, transform.position + ((Vector3)mouse_press_pos - (Vector3)mouse_pos)); //Look at where player is shooting
             }
         }
         if (Input.GetMouseButtonUp(0)) { //Button up
-            lookAt(gameObject, transform.position + ((Vector3)mouse_press_pos - (Vector3)mouse_pos)); //Look at where player is shooting
+            look_at(gameObject, transform.position + ((Vector3)mouse_press_pos - (Vector3)mouse_pos)); //Look at where player is shooting
             if (!mouse_drag) {
                 move_toward_pos = mouse_press_pos; //Set destination
             }
@@ -68,14 +68,11 @@ public class PlayerScript : MonoBehaviour {
         if (Input.GetButton("Stop")) { //Stop the player from moving
             move_toward_pos = transform.position;
         }
-        if(new Vector2(transform.position.x, transform.position.y) != move_toward_pos){ //Movement code
-            Vector2 movement = Vector2.MoveTowards(transform.position, move_toward_pos, speed * Time.deltaTime);
-            transform.position = new Vector3(movement.x, movement.y, transform.position.z); //Move toward destination
-        }
+        move_to(move_toward_pos, speed);
 
 	}
 
-    void lookAt(GameObject obj, Vector3 target) {
+    void look_at(GameObject obj, Vector3 target) {
         /*Makes the object rotate toward the given point
          *Example usage: lookAt(transform, Camera.main.ScreenToWorldPoint(Input.mousePosition)); //Object looks at mouse
          * 
@@ -90,6 +87,16 @@ public class PlayerScript : MonoBehaviour {
         }
         if (transform.position.y > target.y) { //If the mouse is on the bottom side of the object
             transform.rotation = Quaternion.Euler(0, 0, -Vector2.Angle(new Vector2(1, 0), target - obj.transform.position));
+        }
+    }
+
+    void move_to(Vector2 destination, float speed) {
+        /* Move toward a given destination
+         * 
+         */
+        if (new Vector2(transform.position.x, transform.position.y) != destination) { //If destination isn't reached yet
+            Vector2 movement = Vector2.MoveTowards(transform.position, destination, speed * Time.deltaTime);
+            transform.position = new Vector3(movement.x, movement.y, transform.position.z); //Move toward destination
         }
     }
 }

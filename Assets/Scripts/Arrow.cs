@@ -15,4 +15,6 @@ public class Arrow : MonoBehaviour {
     void OnBecameInvisible() {
         Destroy(gameObject);
     }
+
+
 }
