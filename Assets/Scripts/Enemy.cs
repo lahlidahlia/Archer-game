@@ -33,6 +33,14 @@ public class Enemy : MonoBehaviour {
                     Vector2 d = Random.insideUnitCircle * battle_move_range;
                     //Debug.Log(d.magnitude);
                     destination = new Vector2(transform.position.x + d.x, transform.position.y + d.y);
+                    Vector2 viewport_destination = Camera.main.WorldToViewportPoint(destination);//Destination coordinate in viewport coordinate
+
+                    while (viewport_destination.x < 0 || viewport_destination.x > 1 || viewport_destination.y < 0 || viewport_destination.y > 1) { //If destination is out of boundary
+                        //Repick destination
+                        d = Random.insideUnitCircle * battle_move_range;
+                        destination = new Vector2(transform.position.x + d.x, transform.position.y + d.y);
+                        viewport_destination = Camera.main.WorldToViewportPoint(destination);//Destination coordinate in viewport coordinate
+                    }
 
                     movement_chosen = true;
                     
