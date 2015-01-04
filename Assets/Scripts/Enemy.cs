@@ -15,20 +15,25 @@ public class Enemy : MonoBehaviour {
     private bool shot = false; //Whether object has shot anything yet
     public GameObject arrow;
     public float arrow_shoot_speed;
-	// Use this for initialization
-	void Start () {
+    private bool entered_view = false; //Has enemy entered the camera view yet?
+    // Use this for initialization
+    void Start() {
         timer = Time.time;
-        state = "moving";
+        state = "entering"; //Starting state
         player = GameObject.FindWithTag("Player");
-	}
-	
-	// Update is called once per frame
-	void Update () {
-        if (state == "moving") {
+    }
+
+    // Update is called once per frame
+    void Update() {
+        if (state == "entering") {
+            look_at(gameObject, transform.position - Vector3.up);
+            move_to(transform.position - Vector3.up, speed);
+        }
+        else if (state == "moving") {
             look_at(gameObject, player.transform.position);
             if (Time.time - timer > battle_move_frequency) { //If it's time to move again
                 //Movement  
-                if (!movement_chosen) { 
+                if (!movement_chosen) {
                     //Choose a destination
                     Vector2 d = Random.insideUnitCircle * battle_move_range;
                     //Debug.Log(d.magnitude);
@@ -43,7 +48,7 @@ public class Enemy : MonoBehaviour {
                     }
 
                     movement_chosen = true;
-                    
+
                 }
                 if (move_to(destination, speed)) {
                     movement_chosen = false;
@@ -53,7 +58,7 @@ public class Enemy : MonoBehaviour {
             }
         }
 
-        if (state == "shooting") {
+        else if (state == "shooting") {
             look_at(gameObject, player.transform.position);
             if (!shot) {
                 if (Time.time - timer > shoot_delay) { //If it's time to move again
@@ -73,7 +78,7 @@ public class Enemy : MonoBehaviour {
                 }
             }
         }
-	}
+    }
 
     bool move_to(Vector2 destination, float speed) {
         /* Move toward a given destination
@@ -103,6 +108,15 @@ public class Enemy : MonoBehaviour {
         }
         if (transform.position.y > target.y) { //If the mouse is on the bottom side of the object
             transform.rotation = Quaternion.Euler(0, 0, -Vector2.Angle(new Vector2(1, 0), target - obj.transform.position));
+        }
+    }
+    //void OnBecameInvisible() {
+    //    state = "moving";
+    //}
+    void OnWillRenderObject() {
+        if (Camera.current == Camera.main && !entered_view) {
+            state = "moving";
+            entered_view = true;
         }
     }
 }
