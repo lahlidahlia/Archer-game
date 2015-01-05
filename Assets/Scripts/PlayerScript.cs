@@ -19,6 +19,8 @@ public class PlayerScript : MonoBehaviour {
     public float arrow_shoot_speed;
 	// Use this for initialization
 	void Start () {
+        
+
         lineRenderer = GetComponent<LineRenderer>();
         lineRenderer.SetWidth(drag_arrow_width, drag_arrow_width);
         lineRenderer.SetVertexCount(2);

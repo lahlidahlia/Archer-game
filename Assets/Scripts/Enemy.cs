@@ -25,7 +25,7 @@ public class Enemy : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if (state == "entering") {
+        if (state == "entering") { //Move downward when first entering the game
             look_at(gameObject, transform.position - Vector3.up);
             move_to(transform.position - Vector3.up, speed);
         }
