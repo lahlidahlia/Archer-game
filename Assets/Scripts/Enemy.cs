@@ -16,6 +16,7 @@ public class Enemy : MonoBehaviour {
     public GameObject arrow;
     public float arrow_shoot_speed;
     private bool entered_view = false; //Has enemy entered the camera view yet?
+    public float accuracy; //How much the enemy can miss by in degrees
     // Use this for initialization
     void Start() {
         timer = Time.time;
@@ -64,6 +65,9 @@ public class Enemy : MonoBehaviour {
                 if (Time.time - timer > shoot_delay) { //If it's time to move again
                     //Shooting
                     GameObject t_arrow = Instantiate(arrow, transform.position, transform.rotation) as GameObject;
+                    Quaternion rotation = t_arrow.transform.rotation; //Shortener
+                    rotation = Quaternion.Euler(new Vector3(0, 0, (rotation.eulerAngles.z - accuracy / 2) + Random.value * accuracy));
+                    t_arrow.transform.rotation = rotation;
                     t_arrow.rigidbody2D.velocity = t_arrow.transform.right * arrow_shoot_speed;
 
                     timer = Time.time;
